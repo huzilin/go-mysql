@@ -506,7 +506,7 @@ func (b *BinlogSyncer) writeRegisterSlaveCommand() error {
 	hostname := b.localHostname()
 
 	// This should be the name of slave host not the host we are connecting to.
-	data := make([]byte, 4+1+4+1+len(hostname)+1+len(b.cfg.User)+1+len(b.cfg.Password)+2+4+4)
+	data := make([]byte, 4+1+4+1+len(hostname)+1+len(b.cfg.User)+1+2+4+4)
 	pos := 4
 
 	data[pos] = COM_REGISTER_SLAVE
@@ -526,12 +526,10 @@ func (b *BinlogSyncer) writeRegisterSlaveCommand() error {
 	n = copy(data[pos:], b.cfg.User)
 	pos += n
 
-	data[pos] = uint8(len(b.cfg.Password))
+	data[pos] = uint8(0)
 	pos++
-	n = copy(data[pos:], b.cfg.Password)
-	pos += n
 
-	binary.LittleEndian.PutUint16(data[pos:], b.cfg.Port)
+	binary.LittleEndian.PutUint16(data[pos:], 0)
 	pos += 2
 
 	//replication rank, not used

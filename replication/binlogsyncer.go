@@ -529,7 +529,7 @@ func (b *BinlogSyncer) writeRegisterSlaveCommand() error {
 	data[pos] = uint8(0)
 	pos++
 
-	binary.LittleEndian.PutUint16(data[pos:], 0)
+	binary.LittleEndian.PutUint16(data[pos:], b.cfg.Port)
 	pos += 2
 
 	//replication rank, not used

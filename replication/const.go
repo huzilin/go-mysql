@@ -39,6 +39,10 @@ const (
 	BINLOG_ROW_IMAGE_NOBLOB  = "NOBLOB"
 )
 
+const (
+	BINLOG_MARIADB_FL_GROUP_COMMIT_ID uint8 = 0x0010
+)
+
 type EventType byte
 
 const (

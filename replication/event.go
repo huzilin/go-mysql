@@ -441,11 +441,20 @@ func (e *MariadbBinlogCheckPointEvent) Dump(w io.Writer) {
 
 type MariadbGTIDEvent struct {
 	GTID MariadbGTID
+	CID  uint64
 }
 
 func (e *MariadbGTIDEvent) Decode(data []byte) error {
+	pos := 0
 	e.GTID.SequenceNumber = binary.LittleEndian.Uint64(data)
-	e.GTID.DomainID = binary.LittleEndian.Uint32(data[8:])
+	pos += 8
+	e.GTID.DomainID = binary.LittleEndian.Uint32(data[pos:])
+	pos += 4
+	flag := uint8(data[pos])
+
+	if (flag & BINLOG_MARIADB_FL_GROUP_COMMIT_ID) > uint8(0x0000) {
+		e.CID = binary.LittleEndian.Uint64(data[pos:])
+	}
 
 	// we don't care commit id now, maybe later
 
